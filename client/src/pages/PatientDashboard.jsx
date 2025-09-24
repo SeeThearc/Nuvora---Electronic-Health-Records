@@ -6,6 +6,7 @@ import AllowedDoctors from '../components/AllowedDoctors';
 import ChatWithDoctor from '../components/ChatWithDoctor';
 import UploadMedicalRecord from '../components/UploadMedicalRecord';
 import MedicalRecords from '../components/MedicalRecords';
+import LabRequestsApproval from '../components/LabRequestsApproval';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
@@ -62,6 +63,12 @@ const PatientDashboard = () => {
             >
               Medical Records
             </button>
+            <button
+              className={activeTab === 'lab-requests' ? 'active' : ''}
+              onClick={() => setActiveTab('lab-requests')}
+            >
+              Lab Requests Approval
+            </button>
           </div>
 
           <div className="tab-content">
@@ -70,6 +77,7 @@ const PatientDashboard = () => {
             {activeTab === 'chat' && <ChatWithDoctor />}
             {activeTab === 'upload' && <UploadMedicalRecord />}
             {activeTab === 'records' && <MedicalRecords />}
+            {activeTab === 'lab-requests' && <LabRequestsApproval />}
           </div>
         </div>
       </div>

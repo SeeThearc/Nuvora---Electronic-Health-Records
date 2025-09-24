@@ -5,6 +5,7 @@ import PatientList from '../components/PatientList';
 import PatientMedicalRecords from '../components/PatientMedicalRecords';
 import UploadPatientRecord from '../components/UploadPatientRecord';
 import ChatWithPatient from '../components/ChatWithPatient';
+import RequestLabTest from '../components/RequestLabTest';
 import './DoctorDashboard.css';
 
 const DoctorDashboard = () => {
@@ -65,6 +66,13 @@ const DoctorDashboard = () => {
             >
               Chat with Patient
             </button>
+            <button 
+              className={activeTab === 'request-lab-test' ? 'active' : ''} 
+              onClick={() => setActiveTab('request-lab-test')}
+              disabled={!selectedPatient}
+            >
+              Request Lab Test
+            </button>
           </div>
 
           {/* Patient Selection Bar */}
@@ -108,6 +116,9 @@ const DoctorDashboard = () => {
                 key={selectedPatient}
                 patientAddress={selectedPatient} 
               />
+            )}
+            {activeTab === 'request-lab-test' && selectedPatient && (
+              <RequestLabTest selectedPatient={selectedPatient} />
             )}
           </div>
         </div>

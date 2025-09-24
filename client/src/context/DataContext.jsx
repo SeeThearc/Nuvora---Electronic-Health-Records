@@ -36,7 +36,7 @@ export const DataProvider = ({ children }) => {
   const connectWallet = async () => {
     try {
       const contractABI = abi.abi;
-      const contractAddress = "0xEbda9FC1027097076c9dd419635425A20c5a93aF";
+      const contractAddress = "0x57F51278F2659F12365dE11c2cD21752dEd9042b";
 
       if (window.ethereum) {
         const account = await window.ethereum.request({
@@ -69,63 +69,118 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Check Registration
-  const checkUserRegistration = async (contract, address) => {
+  // 🔹 Register Lab
+  const registerLab = async (labData) => {
+    try {
+      if (!state.contract) {
+        alert("Please connect your wallet first");
+        return false;
+      }
+
+      setLoading(true);
+      const ipfsHash = await uploadJSONToIPFS(labData);
+      const tx = await state.contract.registerLab(ipfsHash, labData.labName);
+
+      logAction("Register Lab Tx Sent", {
+        ipfsHash,
+        labName: labData.labName,
+        txHash: tx.hash,
+      });
+
+      await tx.wait();
+      setUserType("lab");
+      setUserData(labData);
+      setLoading(false);
+
+      logAction("Register Lab Tx Confirmed", { ipfsHash, txHash: tx.hash });
+      return true;
+    } catch (error) {
+      setLoading(false);
+      logAction("Register Lab Failed", { error: error.message });
+      return false;
+    }
+  };
+
+  // 🔹 Check if user is a lab
+  const checkLabRegistration = async (contract, address) => {
     try {
       if (!contract) {
-        logAction("Check Registration Failed", { reason: "Contract not init" });
-        return;
+        logAction("Check Lab Registration Failed", { reason: "Contract not init" });
+        return false;
       }
 
-      const isPatient = await contract.isPatient(address);
-      const isDoctor = await contract.isDoctor(address);
-
-      if (isPatient) {
-        setUserType("patient");
-        await fetchUserData(contract, address, "patient");
-      } else if (isDoctor) {
-        setUserType("doctor");
-        await fetchUserData(contract, address, "doctor");
-      } else {
-        setUserType(null);
-        setUserData(null);
-      }
-
-      logAction("Checked User Registration", { address, isPatient, isDoctor });
+      const isLab = await contract.isLab(address);
+      logAction("Checked Lab Registration", { address, isLab });
+      return isLab;
     } catch (error) {
-      logAction("Check Registration Error", { error: error.message });
+      logAction("Check Lab Registration Error", { error: error.message });
+      return false;
     }
   };
 
-  // 🔹 Fetch User Data from IPFS
-  const fetchUserData = async (contract, address, type) => {
-    try {
-      let ipfsHash;
-      if (type === "patient") {
-        const patientData = await contract.getPatientData(address);
-        ipfsHash = patientData.dataIPFShash;
-      } else if (type === "doctor") {
-        const doctorData = await contract.getDoctorData(address);
-        ipfsHash = doctorData.dataIPFShash;
-      } else {
-        setUserData(null);
-        return;
-      }
+  // 🔹 Check Registration
+  const checkUserRegistration = async (contract, address) => {
+  try {
+    if (!contract) {
+      logAction("Check Registration Failed", { reason: "Contract not init" });
+      return;
+    }
 
-      if (!ipfsHash || ipfsHash === "") {
-        setUserData(null);
-        return;
-      }
+    const isPatient = await contract.isPatient(address);
+    const isDoctor = await contract.isDoctor(address);
+    const isLab = await contract.isLab(address);
 
-      const data = await fetchJSONFromIPFS(ipfsHash);
-      setUserData(data);
-
-      logAction("Fetched User Data", { type, address, ipfsHash });
-    } catch (error) {
-      logAction("Fetch User Data Failed", { error: error.message });
+    if (isPatient) {
+      setUserType("patient");
+      await fetchUserData(contract, address, "patient");
+    } else if (isDoctor) {
+      setUserType("doctor");
+      await fetchUserData(contract, address, "doctor");
+    } else if (isLab) {
+      setUserType("lab");
+      await fetchUserData(contract, address, "lab");
+    } else {
+      setUserType(null);
       setUserData(null);
     }
-  };
+
+    logAction("Checked User Registration", { address, isPatient, isDoctor, isLab });
+  } catch (error) {
+    logAction("Check Registration Error", { error: error.message });
+  }
+};
+  // 🔹 Fetch User Data from IPFS
+  const fetchUserData = async (contract, address, type) => {
+  try {
+    let ipfsHash;
+    if (type === "patient") {
+      const patientData = await contract.getPatientData(address);
+      ipfsHash = patientData.dataIPFShash;
+    } else if (type === "doctor") {
+      const doctorData = await contract.getDoctorData(address);
+      ipfsHash = doctorData.dataIPFShash;
+    } else if (type === "lab") {
+      const labData = await contract.getLabData(address);
+      ipfsHash = labData.dataIPFShash;
+    } else {
+      setUserData(null);
+      return;
+    }
+
+    if (!ipfsHash || ipfsHash === "") {
+      setUserData(null);
+      return;
+    }
+
+    const data = await fetchJSONFromIPFS(ipfsHash);
+    setUserData(data);
+
+    logAction("Fetched User Data", { type, address, ipfsHash });
+  } catch (error) {
+    logAction("Fetch User Data Failed", { error: error.message });
+    setUserData(null);
+  }
+};
 
   // 🔹 Fetch All Doctors
   const getAllDoctors = async () => {
@@ -158,7 +213,149 @@ export const DataProvider = ({ children }) => {
       return [];
     }
   };
+  const getAllLabs = async () => {
+  try {
+    if (!state.contract) throw new Error("Contract not initialized");
 
+    const labAddresses = await state.contract.getAllLabAddresses();
+    const labsData = [];
+
+    for (const address of labAddresses) {
+      try {
+        const labData = await state.contract.getLabData(address);
+        if (labData.exists) {
+          const ipfsData = await fetchJSONFromIPFS(labData.dataIPFShash);
+          labsData.push({
+            address,
+            labName: labData.labName,
+            ...ipfsData,
+          });
+        }
+      } catch (error) {
+        logAction("Lab Fetch Failed", { lab: address, error: error.message });
+      }
+    }
+
+    logAction("Fetched All Labs", { count: labsData.length });
+    return labsData;
+  } catch (error) {
+    logAction("Fetch All Labs Failed", { error: error.message });
+    return [];
+  }
+};
+
+  const requestLabTest = async (patientAddress, labAddress, reportIPFS, testMessage) => {
+  try {
+    if (!state.contract) {
+      alert("Please connect your wallet first");
+      return false;
+    }
+
+    setLoading(true);
+    const tx = await state.contract.requestLabTest(
+      patientAddress,
+      labAddress,
+      reportIPFS,
+      testMessage
+    );
+
+    logAction("Request Lab Test Tx Sent", {
+      patientAddress,
+      labAddress,
+      reportIPFS,
+      testMessage,
+      txHash: tx.hash,
+    });
+
+    await tx.wait();
+    setLoading(false);
+
+    logAction("Request Lab Test Tx Confirmed", { txHash: tx.hash });
+    return true;
+  } catch (error) {
+    setLoading(false);
+    logAction("Request Lab Test Failed", { error: error.message });
+    return false;
+  }
+};
+
+const approveLabRequest = async (requestIndex) => {
+  try {
+    if (!state.contract) {
+      alert("Please connect your wallet first");
+      return false;
+    }
+
+    setLoading(true);
+    const tx = await state.contract.approveLabRequest(requestIndex);
+
+    logAction("Approve Lab Request Tx Sent", {
+      requestIndex,
+      txHash: tx.hash,
+    });
+
+    await tx.wait();
+    setLoading(false);
+
+    logAction("Approve Lab Request Tx Confirmed", { txHash: tx.hash });
+    return true;
+  } catch (error) {
+    setLoading(false);
+    logAction("Approve Lab Request Failed", { error: error.message });
+    return false;
+  }
+};
+
+const uploadLabResult = async (patientAddress, requestIndex, resultFile) => {
+  try {
+    if (!state.contract) {
+      alert("Please connect your wallet first");
+      return false;
+    }
+
+    setLoading(true);
+    
+    // Upload result file to IPFS
+    const resultIPFS = await uploadImageToIPFS(resultFile);
+    
+    // Upload to blockchain
+    const tx = await state.contract.uploadLabResult(
+      patientAddress,
+      requestIndex,
+      resultIPFS
+    );
+
+    logAction("Upload Lab Result Tx Sent", {
+      patientAddress,
+      requestIndex,
+      resultIPFS,
+      txHash: tx.hash,
+    });
+
+    await tx.wait();
+    setLoading(false);
+
+    logAction("Upload Lab Result Tx Confirmed", { txHash: tx.hash });
+    return true;
+  } catch (error) {
+    setLoading(false);
+    logAction("Upload Lab Result Failed", { error: error.message });
+    return false;
+  }
+};
+
+// 🔹 Get Lab Requests for Patient
+const getLabRequestsForPatient = async (patientAddress) => {
+  try {
+    if (!state.contract) throw new Error("Contract not initialized");
+    const requests = await state.contract.getLabRequests(patientAddress);
+    logAction("Fetched Lab Requests", { patientAddress, count: requests.length });
+    return requests;
+  } catch (error) {
+    logAction("Fetch Lab Requests Failed", { error: error.message });
+    return [];
+  }
+};
   // 🔹 Upload JSON to IPFS
   const uploadJSONToIPFS = async (data) => {
     try {
@@ -405,6 +602,13 @@ export const DataProvider = ({ children }) => {
         checkUserRegistration,
         refreshUserData,
         getAllDoctors,
+        registerLab,
+        getAllLabs,
+        requestLabTest,
+        approveLabRequest,
+        uploadLabResult,
+        getLabRequestsForPatient,
+        checkLabRegistration,
       }}
     >
       {children}

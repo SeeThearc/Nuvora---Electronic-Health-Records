@@ -8,7 +8,11 @@ const Login = () => {
 
   useEffect(() => {
     if (acc !== "Not connected" && userType) {
-      navigate(`/${userType}-dashboard`);
+      if (userType === 'lab') {
+        navigate('/lab-dashboard');
+      } else {
+        navigate(`/${userType}-dashboard`);
+      }
     }
   }, [acc, userType, navigate]);
 

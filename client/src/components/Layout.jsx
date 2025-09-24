@@ -19,9 +19,17 @@ const Layout = ({ children }) => {
             <>
               <span className="wallet-address">{acc.slice(0, 6)}...{acc.slice(-4)}</span>
               {userType && (
-                <Link to={`/${userType}-dashboard`} className="navbar-link">
-                  Dashboard
-                </Link>
+                <>
+                  {userType === 'lab' ? (
+                    <Link to="/lab-dashboard" className="navbar-link">
+                      Lab Dashboard
+                    </Link>
+                  ) : (
+                    <Link to={`/${userType}-dashboard`} className="navbar-link">
+                      Dashboard
+                    </Link>
+                  )}
+                </>
               )}
               <Link to="/register" className="navbar-link">Register</Link>
             </>

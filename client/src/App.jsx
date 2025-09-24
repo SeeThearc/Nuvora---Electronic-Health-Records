@@ -7,6 +7,11 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import Register from './components/Register';
 import Login from './components/Login';
 import Logs from './components/Logs';
+import RegisterLab from "./components/RegisterLab";
+import LabDashboard from "./components/LabDashboard";
+import LabInfo from './components/LabInfo';
+import RequestLabTest from './components/RequestLabTest';
+import LabRequestsApproval from './components/LabRequestsApproval';
 import './index.css';
 
 function App() {
@@ -21,6 +26,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/patient-dashboard" element={<PatientDashboard />} />
             <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+            <Route path="/register-lab" element={<RegisterLab />} />
+            <Route path="/lab-dashboard" element={<LabDashboard />} />
           </Routes>
         </Layout>
       </Router>
