@@ -36,7 +36,7 @@ export const DataProvider = ({ children }) => {
   const connectWallet = async () => {
     try {
       const contractABI = abi.abi;
-      const contractAddress = "0x27638019199E4D62bfcc0cbbae6300691C10a871";
+      const contractAddress = "0xEbda9FC1027097076c9dd419635425A20c5a93aF";
 
       if (window.ethereum) {
         const account = await window.ethereum.request({
