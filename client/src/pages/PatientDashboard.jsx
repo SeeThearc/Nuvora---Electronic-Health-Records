@@ -8,6 +8,7 @@ import UploadMedicalRecord from '../components/UploadMedicalRecord';
 import MedicalRecords from '../components/MedicalRecords';
 import LabRequestsApproval from '../components/LabRequestsApproval';
 import './PatientDashboard.css';
+import ContractTransactions from './ContractTransactions';
 
 const PatientDashboard = () => {
   const { state, acc, userData, userType } = useData();
@@ -33,6 +34,12 @@ const PatientDashboard = () => {
         {/* Main Content */}
         <div className="main-content">
           <div className="tab-navigation">
+            <button
+              className={activeTab === 'blocks' ? 'active' : ''}
+              onClick={() => setActiveTab('blocks')}
+            >
+              Block Visualizer
+            </button>
             <button 
               className={activeTab === 'grant' ? 'active' : ''} 
               onClick={() => setActiveTab('grant')}
@@ -72,6 +79,7 @@ const PatientDashboard = () => {
           </div>
 
           <div className="tab-content">
+            {activeTab === 'blocks' && <ContractTransactions />}
             {activeTab === 'grant' && <GrantAccess />}
             {activeTab === 'doctors' && <AllowedDoctors />}
             {activeTab === 'chat' && <ChatWithDoctor />}
