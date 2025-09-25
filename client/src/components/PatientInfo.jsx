@@ -23,7 +23,7 @@ const PatientInfo = ({ userData }) => {
       {/* Patient Avatar and Status */}
       <div className="patient-avatar-large">
         <div className="avatar-circle-large">
-          {userData.name?.charAt(0)}{userData.lastName?.charAt(0)}
+          {userData.firstName?.charAt(0)}{userData.lastName?.charAt(0)}
         </div>
         <div className="patient-status">
           <div className="status-indicator"></div>
@@ -37,7 +37,7 @@ const PatientInfo = ({ userData }) => {
       <div className="info-card">
         <div className="info-item">
           <label>Full Name:</label>
-          <span>{userData.name} {userData.lastName}</span>
+          <span>{userData.firstName} {userData.lastName}</span>
         </div>
         <div className="info-item">
           <label>Age:</label>

@@ -55,7 +55,7 @@ const PatientList = ({ selectedPatient, setSelectedPatient }) => {
           // Add patient with limited info if IPFS fails
           patientData.push({
             blockchainAddress: blockchainAddress, // Use the actual blockchain address
-            name: 'Unknown',
+            firstName: 'Unknown',
             lastName: 'Patient',
             age: '--',
             gender: '--',
@@ -82,7 +82,7 @@ const PatientList = ({ selectedPatient, setSelectedPatient }) => {
 
     const filtered = patients.filter(patient => 
       patient.blockchainAddress.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.bloodGroup?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -149,12 +149,12 @@ const PatientList = ({ selectedPatient, setSelectedPatient }) => {
           >
             <div className="patient-avatar">
               <div className="avatar-circle">
-                {patient.name?.charAt(0)}{patient.lastName?.charAt(0)}
+                {patient.firstName?.charAt(0)}{patient.lastName?.charAt(0)}
               </div>
             </div>
             
             <div className="patient-info">
-              <h4>{patient.name} {patient.lastName}</h4>
+              <h4>{patient.firstName} {patient.lastName}</h4>
               <div className="patient-details">
                 <p><strong>Age:</strong> {patient.age}</p>
                 <p><strong>Gender:</strong> {patient.gender}</p>

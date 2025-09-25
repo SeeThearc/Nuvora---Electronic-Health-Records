@@ -44,7 +44,7 @@ const ChatWithDoctor = () => {
             doctorData.push({
               address,
               specialization: doctor.specialization,
-              name: ipfsData.name || 'Unknown',
+              name: ipfsData.firstName || 'Unknown',
               lastName: ipfsData.lastName || 'Doctor'
             });
           }
@@ -186,7 +186,7 @@ const ChatWithDoctor = () => {
           </option>
           {allowedDoctors.map(doctor => (
             <option key={doctor.address} value={doctor.address}>
-              Dr. {doctor.name} {doctor.lastName} - {doctor.specialization}
+              Dr. {doctor.firstName} {doctor.lastName} - {doctor.specialization}
             </option>
           ))}
         </select>
@@ -195,10 +195,10 @@ const ChatWithDoctor = () => {
       {selectedDoctor && selectedDoctorInfo && (
         <div className="selected-doctor-info">
           <div className="doctor-avatar-small">
-            {selectedDoctorInfo.name?.charAt(0)}{selectedDoctorInfo.lastName?.charAt(0)}
+            {selectedDoctorInfo.firstName?.charAt(0)}{selectedDoctorInfo.lastName?.charAt(0)}
           </div>
           <div className="doctor-details">
-            <h4>Dr. {selectedDoctorInfo.name} {selectedDoctorInfo.lastName}</h4>
+            <h4>Dr. {selectedDoctorInfo.firstName} {selectedDoctorInfo.lastName}</h4>
             <p>{selectedDoctorInfo.specialization}</p>
           </div>
           <div className="chat-status">
@@ -222,7 +222,7 @@ const ChatWithDoctor = () => {
               <div className="no-messages">
                 <div className="no-messages-icon">💬</div>
                 <h4>No messages yet</h4>
-                <p>Start the conversation with Dr. {selectedDoctorInfo?.name} {selectedDoctorInfo?.lastName}</p>
+                <p>Start the conversation with Dr. {selectedDoctorInfo?.firstName} {selectedDoctorInfo?.lastName}</p>
                 <p>Your messages are encrypted and stored securely on IPFS</p>
               </div>
             )}
@@ -260,7 +260,7 @@ const ChatWithDoctor = () => {
           <div className="message-input-container">
             <div className="message-input">
               <textarea
-                placeholder={`Type your message to Dr. ${selectedDoctorInfo?.name}...`}
+                placeholder={`Type your message to Dr. ${selectedDoctorInfo?.firstName}...`}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}

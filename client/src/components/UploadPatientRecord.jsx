@@ -10,13 +10,11 @@ const UploadPatientRecord = ({ patientAddress }) => {
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
         alert('File size must be less than 10MB');
         return;
       }
 
-      // Validate file type
       const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
       if (!allowedTypes.includes(file.type)) {
         alert('Please select a valid file type (JPEG, PNG, GIF, WebP, PDF)');
@@ -25,7 +23,6 @@ const UploadPatientRecord = ({ patientAddress }) => {
 
       setSelectedFile(file);
       
-      // Create preview for images
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => setPreview(e.target.result);
@@ -56,7 +53,6 @@ const UploadPatientRecord = ({ patientAddress }) => {
         setSelectedFile(null);
         setDescription('');
         setPreview(null);
-        // Reset file input
         document.getElementById('file-input').value = '';
       }
     } catch (error) {

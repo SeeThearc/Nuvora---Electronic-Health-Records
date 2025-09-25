@@ -19,19 +19,19 @@ const DoctorInfo = ({ userData }) => {
       <div className="info-card">
         <div className="info-item">
           <label>Name:</label>
-          <span>Dr. {userData.name} {userData.lastName}</span>
+          <span>Dr. {userData.firstName} {userData.lastName}</span>
         </div>
         <div className="info-item">
-          <label>Age:</label>
-          <span>{userData.age}</span>
+          <label>Email:</label>
+          <span>{userData.email}</span>
         </div>
         <div className="info-item">
-          <label>Gender:</label>
-          <span>{userData.gender}</span>
+          <label>Phone:</label>
+          <span>{userData.phone}</span>
         </div>
         <div className="info-item">
-          <label>Blood Group:</label>
-          <span>{userData.bloodGroup}</span>
+          <label>MedicalLicense:</label>
+          <span>{userData.medicalLicense}</span>
         </div>
         <div className="info-item">
           <label>Specialization:</label>
@@ -39,7 +39,7 @@ const DoctorInfo = ({ userData }) => {
         </div>
         <div className="info-item">
           <label>Experience:</label>
-          <span>{userData.yearsWorked} years</span>
+          <span>{userData.yearsOfExperience} years</span>
         </div>
       </div>
 

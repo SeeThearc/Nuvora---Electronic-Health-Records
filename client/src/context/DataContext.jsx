@@ -20,7 +20,6 @@ export const DataProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState([]); // 🔹 Store all logs
 
-  // 🔹 Logger function
   const logAction = (action, details = {}) => {
     const newLog = {
       timestamp: new Date().toISOString(),
@@ -32,7 +31,7 @@ export const DataProvider = ({ children }) => {
     setLogs((prev) => [...prev, newLog]);
   };
 
-  // 🔹 Wallet Connection
+  // Wallet Connection
   const connectWallet = async () => {
     try {
       const contractABI = abi.abi;
@@ -69,7 +68,6 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Register Lab
   const registerLab = async (labData) => {
     try {
       if (!state.contract) {
@@ -101,7 +99,6 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Check if user is a lab
   const checkLabRegistration = async (contract, address) => {
     try {
       if (!contract) {
@@ -118,7 +115,6 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Check Registration
   const checkUserRegistration = async (contract, address) => {
   try {
     if (!contract) {
@@ -149,7 +145,7 @@ export const DataProvider = ({ children }) => {
     logAction("Check Registration Error", { error: error.message });
   }
 };
-  // 🔹 Fetch User Data from IPFS
+
   const fetchUserData = async (contract, address, type) => {
   try {
     let ipfsHash;
@@ -182,7 +178,6 @@ export const DataProvider = ({ children }) => {
   }
 };
 
-  // 🔹 Fetch All Doctors
   const getAllDoctors = async () => {
     try {
       if (!state.contract) throw new Error("Contract not initialized");
@@ -315,10 +310,8 @@ const uploadLabResult = async (patientAddress, requestIndex, resultFile) => {
 
     setLoading(true);
     
-    // Upload result file to IPFS
     const resultIPFS = await uploadImageToIPFS(resultFile);
     
-    // Upload to blockchain
     const tx = await state.contract.uploadLabResult(
       patientAddress,
       requestIndex,
@@ -344,7 +337,6 @@ const uploadLabResult = async (patientAddress, requestIndex, resultFile) => {
   }
 };
 
-// 🔹 Get Lab Requests for Patient
 const getLabRequestsForPatient = async (patientAddress) => {
   try {
     if (!state.contract) throw new Error("Contract not initialized");
@@ -356,7 +348,7 @@ const getLabRequestsForPatient = async (patientAddress) => {
     return [];
   }
 };
-  // 🔹 Upload JSON to IPFS
+
   const uploadJSONToIPFS = async (data) => {
     try {
       setLoading(true);
@@ -378,7 +370,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Upload Image to IPFS
   const uploadImageToIPFS = async (file) => {
     try {
       setLoading(true);
@@ -417,7 +408,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Fetch JSON from IPFS
   const fetchJSONFromIPFS = async (hash) => {
     try {
       const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${hash}`);
@@ -445,7 +435,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Fetch Medical Records
   const fetchMedicalRecords = async (patientAddress) => {
     try {
       const recordHashes = await getPatientRecords(patientAddress);
@@ -461,7 +450,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Register Patient
   const registerPatient = async (patientData) => {
     try {
       if (!state.contract) {
@@ -489,7 +477,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Register Doctor
   const registerDoctor = async (doctorData) => {
     try {
       if (!state.contract) {
@@ -524,7 +511,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Add Medical Record
   const addMedicalRecord = async (patientAddress, imageFile, description = "") => {
     try {
       if (!state.contract) {
@@ -573,7 +559,6 @@ const getLabRequestsForPatient = async (patientAddress) => {
     }
   };
 
-  // 🔹 Refresh User Data
   const refreshUserData = async () => {
     if (state.contract && acc && acc !== "Not connected") {
       await checkUserRegistration(state.contract, acc);

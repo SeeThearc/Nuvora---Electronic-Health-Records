@@ -18,7 +18,6 @@ const RequestLabTest = ({ selectedPatient }) => {
     
     try {
       setLoading(true);
-      // Get all lab addresses - you'll need to add this function to your contract
       const labAddresses = await state.contract.getAllLabAddresses();
       const labData = [];
 

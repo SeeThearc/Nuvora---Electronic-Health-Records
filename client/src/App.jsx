@@ -9,9 +9,7 @@ import Login from './components/Login';
 import Logs from './components/Logs';
 import RegisterLab from "./components/RegisterLab";
 import LabDashboard from "./components/LabDashboard";
-import LabInfo from './components/LabInfo';
-import RequestLabTest from './components/RequestLabTest';
-import LabRequestsApproval from './components/LabRequestsApproval';
+import ContractTransactions from './pages/ContractTransactions';
 import './index.css';
 
 function App() {
@@ -28,6 +26,7 @@ function App() {
             <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
             <Route path="/register-lab" element={<RegisterLab />} />
             <Route path="/lab-dashboard" element={<LabDashboard />} />
+            <Route path='/exploblock' element={<ContractTransactions />} />
           </Routes>
         </Layout>
       </Router>
